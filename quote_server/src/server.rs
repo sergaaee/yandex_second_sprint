@@ -1,3 +1,4 @@
+use crate::errors::ServerError;
 use crate::quote_generator::QuoteGenerator;
 use common::errors::symbol::SymbolError;
 use common::models::Symbol;
@@ -7,7 +8,6 @@ use std::net::{TcpStream, UdpSocket};
 use std::sync::{Arc, Mutex};
 use std::thread;
 use std::time::{Duration, Instant};
-use crate::errors::ServerError;
 
 pub fn handle_client(
     stream: TcpStream,
@@ -24,13 +24,10 @@ pub fn handle_client(
 
         let parts: Vec<&str> = line.trim().split_whitespace().collect();
         if parts.len() != 3 || parts[0] != "STREAM" {
-            eprintln!("Invalid command: {}", line);
-            continue;
+            return Err(ServerError::InvalidCommand);
         }
 
-        let udp_addr: std::net::SocketAddr = parts[1]
-            .replace("udp://", "")
-            .parse()?;
+        let udp_addr: std::net::SocketAddr = parts[1].replace("udp://", "").parse()?;
 
         let tickers: HashSet<String> = parts[2].split(',').map(|s| s.to_string()).collect();
 
