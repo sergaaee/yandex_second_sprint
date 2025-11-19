@@ -1,16 +1,18 @@
 mod quote_generator;
 mod server;
 mod errors;
+mod constants;
 
 use crate::quote_generator::QuoteGenerator;
 use crate::server::handle_client;
 use std::net::{TcpListener, UdpSocket};
 use std::sync::{Arc, Mutex};
 use std::thread;
+use crate::constants::SERVER_PORT;
 
 fn main() -> std::io::Result<()> {
-    let listener = TcpListener::bind("127.0.0.1:7878")?;
-    println!("Server listening on port 7878");
+    let listener = TcpListener::bind(format!("127.0.0.1:{SERVER_PORT}"))?;
+    println!("Server listening on port {SERVER_PORT}");
     let generator = Arc::new(Mutex::new(QuoteGenerator::new()));
     let udp_socket = Arc::new(Mutex::new(
         UdpSocket::bind("0.0.0.0:9000")?,

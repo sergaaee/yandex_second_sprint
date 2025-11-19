@@ -8,6 +8,7 @@ use std::net::{TcpStream, UdpSocket};
 use std::sync::{Arc, Mutex};
 use std::thread;
 use std::time::{Duration, Instant};
+use crate::constants::TIMEOUT_SEC;
 
 pub fn handle_client(
     stream: TcpStream,
@@ -62,7 +63,7 @@ pub fn handle_client(
             loop {
                 // Проверяем Keep-Alive
                 let elapsed = last_ping_stream.lock().unwrap().elapsed();
-                if elapsed > Duration::from_secs(5) {
+                if elapsed > Duration::from_secs(TIMEOUT_SEC) {
                     println!("Client {} timed out, stopping stream", udp_addr);
                     break;
                 }
@@ -70,7 +71,6 @@ pub fn handle_client(
                 // Генерация и отправка котировок
                 for &symbol in &symbols_clone {
                     let quote = {
-                        // TODO: генерация должна быть общая для всех клиентов
                         let mut gen_ = generator.lock().unwrap();
                         match gen_.generate_quote(symbol) {
                             Ok(q) => q,
