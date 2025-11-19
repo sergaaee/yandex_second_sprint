@@ -215,6 +215,7 @@ dependencies = [
  "common",
  "rand",
  "serde_json",
+ "thiserror",
 ]
 
 [[package]]

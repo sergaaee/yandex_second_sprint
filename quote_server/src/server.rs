@@ -7,12 +7,13 @@ use std::net::{TcpStream, UdpSocket};
 use std::sync::{Arc, Mutex};
 use std::thread;
 use std::time::{Duration, Instant};
+use crate::errors::ServerError;
 
 pub fn handle_client(
     stream: TcpStream,
     generator: Arc<Mutex<QuoteGenerator>>,
     udp_socket: Arc<Mutex<UdpSocket>>,
-) -> Result<String, SymbolError> {
+) -> Result<String, ServerError> {
     let reader = BufReader::new(stream);
 
     for line in reader.lines() {
@@ -22,7 +23,6 @@ pub fn handle_client(
         };
 
         let parts: Vec<&str> = line.trim().split_whitespace().collect();
-        dbg!(&parts);
         if parts.len() != 3 || parts[0] != "STREAM" {
             eprintln!("Invalid command: {}", line);
             continue;
@@ -30,8 +30,7 @@ pub fn handle_client(
 
         let udp_addr: std::net::SocketAddr = parts[1]
             .replace("udp://", "")
-            .parse()
-            .expect("Invalid UDP address");
+            .parse()?;
 
         let tickers: HashSet<String> = parts[2].split(',').map(|s| s.to_string()).collect();
 
@@ -107,8 +106,6 @@ pub fn handle_client(
                         if msg.trim() == "Ping" {
                             let mut lp = last_ping_monitor.lock().unwrap();
                             *lp = Instant::now();
-                            // Можно отправлять Pong обратно
-                            println!("RECEIVED PING from {src}");
                             let _ = udp_socket_recv.send_to(b"Pong", src);
                         }
                     }

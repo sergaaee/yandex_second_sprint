@@ -1,3 +1,4 @@
+use std::time::SystemTimeError;
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
@@ -5,4 +6,12 @@ use thiserror::Error;
 pub enum SymbolError {
     #[error("unsupported symbol")]
     UnsupportedSymbol,
+}
+
+#[derive(Debug, Error)]
+pub enum GenerationError {
+    #[error("Symbol error occured")]
+    SymbolError(#[from] SymbolError),
+    #[error("System time error occured")]
+    SystemTimeError(#[from] SystemTimeError),
 }

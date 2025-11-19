@@ -1,4 +1,4 @@
-use common::errors::symbol::SymbolError;
+use common::errors::symbol::GenerationError;
 use common::models::{StockQuote, Symbol};
 use std::collections::HashMap;
 use std::time::{SystemTime, UNIX_EPOCH};
@@ -14,7 +14,7 @@ impl QuoteGenerator {
         }
     }
 
-    pub fn generate_quote(&mut self, symbol: Symbol) -> Result<StockQuote, SymbolError> {
+    pub fn generate_quote(&mut self, symbol: Symbol) -> Result<StockQuote, GenerationError> {
         symbol.validate()?;
 
         let last_price = self
@@ -34,8 +34,7 @@ impl QuoteGenerator {
         };
 
         let ts = SystemTime::now()
-            .duration_since(UNIX_EPOCH)
-            .unwrap()
+            .duration_since(UNIX_EPOCH)?
             .as_millis() as u64;
 
         Ok(StockQuote {

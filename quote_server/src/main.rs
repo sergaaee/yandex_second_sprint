@@ -1,5 +1,6 @@
 mod quote_generator;
 mod server;
+mod errors;
 
 use crate::quote_generator::QuoteGenerator;
 use crate::server::handle_client;
@@ -12,13 +13,13 @@ fn main() -> std::io::Result<()> {
     println!("Server listening on port 7878");
     let generator = Arc::new(Mutex::new(QuoteGenerator::new()));
     let udp_socket = Arc::new(Mutex::new(
-        UdpSocket::bind("0.0.0.0:9000").expect("Failed to bind UDP socket"),
+        UdpSocket::bind("0.0.0.0:9000")?,
     ));
 
     for stream in listener.incoming() {
         match stream {
             Ok(stream) => {
-                println!("New TCP client: {}", stream.peer_addr().unwrap());
+                println!("New TCP client: {}", stream.peer_addr()?);
                 let generator = Arc::clone(&generator);
                 let udp_clone = Arc::clone(&udp_socket);
                 thread::spawn(move || handle_client(stream, generator, udp_clone));
