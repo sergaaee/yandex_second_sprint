@@ -22,8 +22,8 @@ pub struct Args {
 
 pub struct Config {
     pub udp_port: u16,
-    pub udp_addr: String,
-    pub udp_ping_addr: String,
+    pub udp_addr: String, // Using raw types is an antipattern in rust, read abount new-type pattern someday but for now will work
+    pub udp_ping_addr: String, // Using raw types is an antipattern in rust, read abount new-type pattern someday but for now will work
 }
 
 impl Config {

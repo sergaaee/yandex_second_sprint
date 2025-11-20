@@ -4,7 +4,7 @@ use thiserror::Error;
 
 #[derive(Debug, Error, Serialize, Deserialize)]
 pub enum SymbolError {
-    #[error("unsupported symbol")]
+    #[error("unsupported symbol")] // nice use of thiserror!
     UnsupportedSymbol,
 }
 

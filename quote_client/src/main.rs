@@ -19,7 +19,8 @@ fn main() -> io::Result<()> {
 
     // Создаем UDP сокет и биндимся на локальном порту
     let udp_socket = UdpSocket::bind(format!("127.0.0.1:{}", config.udp_port))?;
-    println!("Listening for UDP stream on {}", config.udp_addr);
+    // Next time use some propper logging like tracing::log!("message")
+    println!("Listening for UDP stream on {}", config.udp_addr); 
 
     // Поток для приема UDP сообщений
     let udp_socket_clone = udp_socket.try_clone()?;
