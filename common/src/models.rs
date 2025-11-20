@@ -4,6 +4,7 @@ use strum_macros::{AsRefStr, EnumIter, EnumString};
 pub mod quote;
 pub mod symbol;
 
+// This is strange separetion on models and implementations, maybe it is common in C# with its DDD but in rust we usually follow simple module hierarchy approach but this one still works well
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct StockQuote {
     pub ticker: String,

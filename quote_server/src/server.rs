@@ -48,7 +48,7 @@ pub fn handle_client(
             .lock()
             .unwrap()
             .set_read_timeout(Some(Duration::from_secs(1)))
-            .unwrap();
+            .unwrap(); // ааааа, я нашёл, думал ты нигде не использовал unwrap, попался
 
         let generator = Arc::clone(&generator);
         let symbols_clone = symbols.clone();
